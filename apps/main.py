@@ -1,9 +1,8 @@
 import os
-from tkinter.dnd import dnd_start
+#from tkinter.dnd import dnd_start
 from pyspark.sql import SparkSession
+import time
 from pyspark.sql.functions import *
-
-
 
 def init_spark():
     print("Creating session")
@@ -19,19 +18,24 @@ def main():
                     .load() 
     
     stream_detail_df.printSchema()
+    #stream_detail_df.isStreaming()
     ds = stream_detail_df.selectExpr("CAST(value AS STRING)")
     print(type(stream_detail_df))
     print(type(ds))
-    rawQuery = ds.writeStream.queryName("qraw").format("memory").start()
-    raw = spark.sql("select * from qraw")
-    print("#####################")
-    raw.show()
-    print("#####################")
+    print("########## RAW QUERY ##########")
+    rawQuery = ds.writeStream.queryName("qraw").format("memory").start()      
+    time.sleep(30)
+    spark.sql("select * from qraw").show()
+    rawQuery.stop()
+    print("########## DATA QUERY ##########")
     dataQuery = ds.writeStream.queryName("qdata").format("memory").start()
-    alerts = spark.sql("select * from qdata")
+    #alerts = spark.sql("select * from qdata")
+    time.sleep(30)
+    print("PRINT ALERTS")
     print("#####################")
-    alerts.show()
-    print("#####################")
+    spark.sql("select * from qdata").show()
+    #TESTEANDO QUERY.stop
+    dataQuery.stop()
     #data = spark.sql("select * from qdata")
     #data.show()
 

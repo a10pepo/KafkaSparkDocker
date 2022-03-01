@@ -12,6 +12,7 @@ producer = None
 while producer==None:
     try:
         producer = KafkaProducer(bootstrap_servers=['kafka0:29092'],value_serializer=lambda x: dumps(x).encode('utf-8'))
+        print("hola, printeo")
     except Exception as err:
         print(f"Waiting for broker")
 
