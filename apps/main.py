@@ -23,18 +23,17 @@ def main():
     print(type(stream_detail_df))
     print(type(ds))
     rawQuery = ds.writeStream.queryName("qraw").format("memory").start()
+    rawQuery.processAllAvailable()
     raw = spark.sql("select * from qraw")
     print("#####################")
     raw.show()
     print("#####################")
     dataQuery = ds.writeStream.queryName("qdata").format("memory").start()
+    dataQuery.processAllAvailable()
     alerts = spark.sql("select * from qdata")
     print("#####################")
     alerts.show()
     print("#####################")
-    #data = spark.sql("select * from qdata")
-    #data.show()
-
 
 if __name__ == '__main__':
   main()
